@@ -2,7 +2,6 @@ package com.luoruiyong.fileshare.main;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -25,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements HostListFragment.
     private final String ACTIONBAR_TITLE_HOST_LIST = "共享主机";
     private final String ACTIONBAR_TITLE_FILE_LIST = "共享文件";
     private Toolbar mToolbar;
-    private ActionBar mActionBar;
     private String mCurrentTag;
 
     @Override
@@ -35,10 +33,6 @@ public class MainActivity extends AppCompatActivity implements HostListFragment.
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        mActionBar = getSupportActionBar();
-        if (mActionBar != null) {
-            mActionBar.setHomeAsUpIndicator(R.drawable.ic_back_white);
-        }
 
         mCurrentTag = HOST_TAG;
         getSupportFragmentManager().beginTransaction().add(R.id.fl_container, new HostListFragment(), HOST_TAG).commit();
@@ -47,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements HostListFragment.
     @Override
     protected void onResume() {
         super.onResume();
-        updateActionBar();
+        updateActionBarTitle();
     }
 
     @Override
@@ -67,11 +61,6 @@ public class MainActivity extends AppCompatActivity implements HostListFragment.
                 break;
             case R.id.menu_refresh:
                 refresh();
-                break;
-            case android.R.id.home:
-                mCurrentTag = HOST_TAG;
-                updateActionBar();
-                getSupportFragmentManager().popBackStack();
                 break;
         }
         return true;
@@ -98,14 +87,14 @@ public class MainActivity extends AppCompatActivity implements HostListFragment.
         bt.commit();
 
         mCurrentTag = SHARE_FILE_TAG;
-        updateActionBar();
+        updateActionBarTitle();
     }
 
     @Override
     public void onBackPressed() {
         if (mCurrentTag.equals(SHARE_FILE_TAG)) {
             mCurrentTag = HOST_TAG;
-            updateActionBar();
+            updateActionBarTitle();
         } else if (mCurrentTag.equals(HOST_TAG)) {
             long currTime = System.currentTimeMillis();
             if (currTime - sLastBackPressTime > 1500) {
@@ -117,19 +106,13 @@ public class MainActivity extends AppCompatActivity implements HostListFragment.
         super.onBackPressed();
     }
 
-    private void updateActionBar() {
+    private void updateActionBarTitle() {
         String title;
         switch (mCurrentTag) {
             case HOST_TAG:
-                if (mActionBar != null) {
-                    mActionBar.setDisplayHomeAsUpEnabled(false);
-                }
                 title = ACTIONBAR_TITLE_HOST_LIST;
                 break;
             case SHARE_FILE_TAG:
-                if (mActionBar != null) {
-                    mActionBar.setDisplayHomeAsUpEnabled(true);
-                }
                 title = ACTIONBAR_TITLE_FILE_LIST;
                 break;
             default:
