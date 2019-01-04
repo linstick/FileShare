@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tv_host_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#333333"
+            android:textSize="18sp"
+            android:text="主机A" />
+
+        <TextView
+            android:id="@+id/tv_ip_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:text="192.168.1.10" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_divide_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaaaaa" />
+
+</LinearLayout>
