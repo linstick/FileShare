@@ -14,7 +14,8 @@ import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.main.view.HostListFragment;
 import com.luoruiyong.fileshare.main.view.ShareFileListFragment;
 
-public class MainActivity extends AppCompatActivity implements HostListFragment.OnHostItemClickListener {
+public class MainActivity extends AppCompatActivity implements
+        HostListFragment.OnHostItemClickListener, ShareFileListFragment.OnBackToHostFragmentListener{
 
     private static final String TAG = "MainActivity";
     private static long sLastBackPressTime = 0;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements HostListFragment.
 
     // 顶部状态栏的刷新操作
     private void refresh() {
-        ((BaseListFragment) getSupportFragmentManager().findFragmentByTag(HOST_TAG)).refresh();
+        ((BaseListFragment) getSupportFragmentManager().findFragmentByTag(mCurrentTag)).refresh();
     }
 
     private void browseProfile() {
@@ -83,11 +84,18 @@ public class MainActivity extends AppCompatActivity implements HostListFragment.
     public void onHostItemClick(Host host) {
         FragmentTransaction bt = getSupportFragmentManager().beginTransaction();
         bt.addToBackStack(HOST_TAG);
-        bt.replace(R.id.fl_container, new ShareFileListFragment(), SHARE_FILE_TAG);
+        bt.replace(R.id.fl_container, ShareFileListFragment.newInstance(host), SHARE_FILE_TAG);
         bt.commit();
 
         mCurrentTag = SHARE_FILE_TAG;
         updateActionBarTitle();
+    }
+
+    @Override
+    public void onBackToHostFragment() {
+        mCurrentTag = HOST_TAG;
+        updateActionBarTitle();
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override

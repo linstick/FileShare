@@ -1,9 +1,12 @@
 package com.luoruiyong.fileshare.bean;
 
-public class Host {
+import java.io.Serializable;
+
+public class Host implements Serializable{
 
     private String mName;
     private String mIpAddress;
+    private int mFileCount;
 
     public Host() {
     }
@@ -24,12 +27,20 @@ public class Host {
         this.mName = name;
     }
 
+    public int getFileCount() {
+        return mFileCount;
+    }
+
+    public void setFileCount(int fileCount) {
+        this.mFileCount = fileCount;
+    }
 
     @Override
     public String toString() {
         return "Host{" +
                 "mName='" + mName + '\'' +
-                ", mIp='" + mIpAddress + '\'' +
+                ", mIpAddress='" + mIpAddress + '\'' +
+                ", mFileCount=" + mFileCount +
                 '}';
     }
 }

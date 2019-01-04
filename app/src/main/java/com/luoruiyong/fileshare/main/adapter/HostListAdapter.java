@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,14 +31,14 @@ public class HostListAdapter extends RecyclerView.Adapter<HostListAdapter.ViewHo
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_host_list, parent, false);
         final ViewHolder holder = new ViewHolder(view);
-        if (mListener != null) {
-            holder.mItemLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        holder.mItemLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mListener != null) {
                     mListener.onItemClick(holder.getAdapterPosition());
                 }
-            });
-        }
+            }
+        });
         return holder;
     }
 
@@ -48,6 +47,7 @@ public class HostListAdapter extends RecyclerView.Adapter<HostListAdapter.ViewHo
         Host host = mList.get(position);
         holder.mHostNameTv.setText(host.getName());
         holder.mIpAddressTv.setText(host.getIpAddress());
+        holder.mFileCountTv.setText(host.getFileCount() + "");
     }
 
     @Override
@@ -55,17 +55,23 @@ public class HostListAdapter extends RecyclerView.Adapter<HostListAdapter.ViewHo
         return mList == null ? 0 : mList.size();
     }
 
+    public static interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout mItemLayout;
         TextView mHostNameTv;
         TextView mIpAddressTv;
+        TextView mFileCountTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mItemLayout = itemView.findViewById(R.id.rl_item_layout);
             mHostNameTv = itemView.findViewById(R.id.tv_host_name);
             mIpAddressTv = itemView.findViewById(R.id.tv_ip_address);
+            mFileCountTv = itemView.findViewById(R.id.tv_count);
         }
     }
 }

@@ -26,6 +26,7 @@ public class HostListModel {
                     Host host = new Host();
                     host.setName("主机" + (i + 1));
                     host.setIpAddress("192.168.1." + (i + 10));
+                    host.setFileCount(i + 5);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {

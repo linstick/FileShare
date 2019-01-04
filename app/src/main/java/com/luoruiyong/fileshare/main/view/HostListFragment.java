@@ -15,14 +15,13 @@ import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.base.BaseListFragment;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.main.adapter.HostListAdapter;
-import com.luoruiyong.fileshare.main.adapter.OnItemClickListener;
 import com.luoruiyong.fileshare.main.contract.HostContract;
 import com.luoruiyong.fileshare.main.presenter.HostPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HostListFragment extends BaseListFragment implements HostContract.View, OnItemClickListener {
+public class HostListFragment extends BaseListFragment implements HostContract.View, HostListAdapter.OnItemClickListener {
     private static final String TAG = "HostListFragment";
 
     private SwipeRefreshLayout mRefreshLayout;
@@ -52,7 +51,6 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
             mList = new ArrayList<>();
         }
         mAdapter = new HostListAdapter(mList);
-        mAdapter.setOnItemClickListener(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
 
@@ -64,6 +62,7 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
         });
 
         if (getActivity() instanceof OnHostItemClickListener) {
+            mAdapter.setOnItemClickListener(this);
             mListener = (OnHostItemClickListener) getActivity();
         }
     }
