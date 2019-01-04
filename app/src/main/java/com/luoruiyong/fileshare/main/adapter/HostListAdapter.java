@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.luoruiyong.fileshare.R;
@@ -56,13 +57,13 @@ public class HostListAdapter extends RecyclerView.Adapter<HostListAdapter.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout mItemLayout;
+        RelativeLayout mItemLayout;
         TextView mHostNameTv;
         TextView mIpAddressTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mItemLayout = itemView.findViewById(R.id.ll_item_layout);
+            mItemLayout = itemView.findViewById(R.id.rl_item_layout);
             mHostNameTv = itemView.findViewById(R.id.tv_host_name);
             mIpAddressTv = itemView.findViewById(R.id.tv_ip_address);
         }
