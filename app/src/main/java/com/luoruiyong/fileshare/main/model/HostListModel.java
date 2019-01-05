@@ -22,13 +22,13 @@ public class HostListModel {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 5; i++) {
                     Host host = new Host();
                     host.setName("主机" + (i + 1));
                     host.setIpAddress("192.168.1." + (i + 10));
                     host.setFileCount(i + 5);
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

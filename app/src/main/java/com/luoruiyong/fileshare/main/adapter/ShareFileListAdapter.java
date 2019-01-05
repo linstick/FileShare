@@ -20,7 +20,7 @@ public class ShareFileListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private List<ShareFile> mList;
     private Host mHost;
-    private OnParticialItemClickListener mListener;
+    private OnPartialItemClickListener mListener;
 
     private final int TYPE_HEADER = 0;
     private final int TYPE_ITEM = 1;
@@ -29,7 +29,7 @@ public class ShareFileListAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.mList = mList;
     }
 
-    public void setOnParticalItemClickListener(OnParticialItemClickListener listener) {
+    public void setOnParticalItemClickListener(OnPartialItemClickListener listener) {
         this.mListener = listener;
     }
 
@@ -135,7 +135,7 @@ public class ShareFileListAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public interface OnParticialItemClickListener {
+    public interface OnPartialItemClickListener {
         void onBackViewClick();
         void onDownloadViewClick(int position);
     }

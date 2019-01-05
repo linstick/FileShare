@@ -60,16 +60,8 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.menu_profile:
                 browseProfile();
                 break;
-            case R.id.menu_refresh:
-                refresh();
-                break;
         }
         return true;
-    }
-
-    // 顶部状态栏的刷新操作
-    private void refresh() {
-        ((BaseListFragment) getSupportFragmentManager().findFragmentByTag(mCurrentTag)).refresh();
     }
 
     private void browseProfile() {

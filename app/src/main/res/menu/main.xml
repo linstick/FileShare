@@ -16,10 +16,4 @@
 
     </item>
 
-    <item
-        android:id="@+id/menu_refresh"
-        android:icon="@drawable/ic_refresh_white"
-        app:showAsAction="ifRoom"
-        android:title="刷新"></item>
-
 </menu>

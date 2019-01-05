@@ -9,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luoruiyong.fileshare.R;
@@ -26,11 +29,14 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
 
     private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
+    private LinearLayout mNoItemLayout;
+    private TextView mNoItemMessageTv;
+    private Button mRefreshBtn;
+
     private List<Host> mList;
     private HostListAdapter mAdapter;
 
     private HostContract.Presenter mPresenter;
-    private boolean mRefreshing = false;
     private OnHostItemClickListener mListener;
 
     @Nullable
@@ -39,6 +45,9 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         mRefreshLayout = view.findViewById(R.id.refresh_layout);
         mRecyclerView = view.findViewById(R.id.rv_list);
+        mNoItemLayout = view.findViewById(R.id.ll_no_item_layout);
+        mNoItemMessageTv = view.findViewById(R.id.tv_message);
+        mRefreshBtn = view.findViewById(R.id.btn_refresh);
         return view;
     }
 
@@ -50,6 +59,12 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
         if (mList == null) {
             mList = new ArrayList<>();
         }
+        if (mList.size() == 0) {
+            mNoItemLayout.setVisibility(View.VISIBLE);
+        } else {
+            mNoItemLayout.setVisibility(View.GONE);
+        }
+
         mAdapter = new HostListAdapter(mList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
@@ -60,6 +75,16 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
                 refresh();
             }
         });
+
+        mRefreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refresh();
+            }
+        });
+
+        mNoItemMessageTv.setText("在当前局域网内暂时没有搜索到共享主机");
+        mRefreshBtn.setText("重新搜索");
 
         if (getActivity() instanceof OnHostItemClickListener) {
             mAdapter.setOnItemClickListener(this);
@@ -73,9 +98,8 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mRefreshing) {
+                if (mRefreshLayout.isRefreshing()) {
                     mRefreshLayout.setRefreshing(false);
-                    mRefreshing = false;
                 }
                 mList.add(host);
                 mAdapter.notifyDataSetChanged();
@@ -85,12 +109,14 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
 
     @Override
     public void hideRefreshLayout() {
-        if (mRefreshing) {
-            mRefreshing = false;
+        if (mRefreshLayout.isRefreshing()) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     mRefreshLayout.setRefreshing(false);
+                    if (mList == null || mList.size() == 0) {
+                        mNoItemLayout.setVisibility(View.VISIBLE);
+                    }
                 }
             });
         }
@@ -103,19 +129,14 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
 
     // -----------------------------------------
 
-
-    // --------MainActivity触发的事件------------
     @Override
     public void refresh() {
-        if (!mRefreshing) {
-            mRefreshing = true;
-            mRefreshLayout.setRefreshing(true);
-            mList.clear();
-            mAdapter.notifyDataSetChanged();
-            mPresenter.refresh();
-        }
+        mRefreshLayout.setRefreshing(true);
+        mNoItemLayout.setVisibility(View.GONE);
+        mList.clear();
+        mAdapter.notifyDataSetChanged();
+        mPresenter.refresh();
     }
-    // -----------------------------------------
 
     // 列表点击事件回调
     @Override
