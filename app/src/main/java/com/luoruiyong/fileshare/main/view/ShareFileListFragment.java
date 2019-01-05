@@ -3,6 +3,7 @@ package com.luoruiyong.fileshare.main.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luoruiyong.fileshare.R;
-import com.luoruiyong.fileshare.base.BaseListFragment;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.bean.ShareFile;
 import com.luoruiyong.fileshare.main.adapter.ShareFileListAdapter;
@@ -25,7 +25,7 @@ import com.luoruiyong.fileshare.main.presenter.ShareFilePresenterImpl;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShareFileListFragment extends BaseListFragment implements ShareFileContract.View, ShareFileListAdapter.OnPartialItemClickListener {
+public class ShareFileListFragment extends Fragment implements ShareFileContract.View, ShareFileListAdapter.OnPartialItemClickListener {
     private static final String TAG = "ShareFileListFragment";
 
     private static final String HOST_TAG = "host_tag";
@@ -156,7 +156,6 @@ public class ShareFileListFragment extends BaseListFragment implements ShareFile
 
     // -----------------------------------------
 
-    @Override
     public void refresh() {
         mNoItemLayout.setVisibility(View.GONE);
         mRefreshLayout.setRefreshing(true);

@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.luoruiyong.fileshare.R;
-import com.luoruiyong.fileshare.base.BaseListFragment;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.main.view.HostListFragment;
 import com.luoruiyong.fileshare.main.view.ShareFileListFragment;

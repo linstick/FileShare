@@ -3,6 +3,7 @@ package com.luoruiyong.fileshare.main.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luoruiyong.fileshare.R;
-import com.luoruiyong.fileshare.base.BaseListFragment;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.main.adapter.HostListAdapter;
 import com.luoruiyong.fileshare.main.contract.HostContract;
@@ -24,7 +24,7 @@ import com.luoruiyong.fileshare.main.presenter.HostPresenterImpl;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HostListFragment extends BaseListFragment implements HostContract.View, HostListAdapter.OnItemClickListener {
+public class HostListFragment extends Fragment implements HostContract.View, HostListAdapter.OnItemClickListener {
     private static final String TAG = "HostListFragment";
 
     private SwipeRefreshLayout mRefreshLayout;
@@ -129,7 +129,6 @@ public class HostListFragment extends BaseListFragment implements HostContract.V
 
     // -----------------------------------------
 
-    @Override
     public void refresh() {
         mRefreshLayout.setRefreshing(true);
         mNoItemLayout.setVisibility(View.GONE);
