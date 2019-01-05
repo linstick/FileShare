@@ -25,6 +25,7 @@ public class MainActivity extends BaseActivity implements
     private static long sLastBackPressTime = 0;
     private final String HOST_TAG = "host";
     private final String SHARE_FILE_TAG = "share_file";
+    private final String KEY_ACTIONBAR_TITLE = "title";
     private final String ACTIONBAR_TITLE_DEFAULT = "共享小助手";
     private final String ACTIONBAR_TITLE_HOST_LIST = "共享主机";
     private final String ACTIONBAR_TITLE_FILE_LIST = "共享文件";
@@ -39,8 +40,12 @@ public class MainActivity extends BaseActivity implements
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        mCurrentTag = HOST_TAG;
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_container, new HostListFragment(), HOST_TAG).commit();
+        if (savedInstanceState == null) {
+            mCurrentTag = HOST_TAG;
+            getSupportFragmentManager().beginTransaction().add(R.id.fl_container, new HostListFragment(), HOST_TAG).commit();
+        } else {
+            mCurrentTag = savedInstanceState.getString(KEY_ACTIONBAR_TITLE);
+        }
 
         if (Config.isFirstRun() && !isPermissionGranted()) {
             Config.saveRunState(false);
@@ -125,5 +130,11 @@ public class MainActivity extends BaseActivity implements
                 title = ACTIONBAR_TITLE_DEFAULT;
         }
         mToolbar.setTitle(title);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_ACTIONBAR_TITLE, mCurrentTag);
     }
 }
