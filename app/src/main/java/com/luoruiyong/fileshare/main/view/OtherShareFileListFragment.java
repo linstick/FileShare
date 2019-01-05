@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luoruiyong.fileshare.R;
+import com.luoruiyong.fileshare.base.BaseActivity;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.bean.ShareFile;
 import com.luoruiyong.fileshare.main.adapter.OtherShareFileListAdapter;
@@ -175,10 +176,27 @@ public class OtherShareFileListFragment extends Fragment implements ShareFileCon
 
     @Override
     public void onOperateViewClick(int position) {
-        ShareFile shareFile = mList.get(position);
+        final ShareFile shareFile = mList.get(position);
         if (!shareFile.isDownload()) {
-            mPresenter.downloadFile();
-            Toast.makeText(getContext(), "开始下载文件：" + shareFile.getName(), Toast.LENGTH_SHORT).show();
+            // 下载之前需要检查权限
+            BaseActivity activity = (BaseActivity) getActivity();
+            if (!activity.isPermissionGranted()) {
+                activity.requestPermissions(new BaseActivity.OnRequestPermissionsResultCallBack() {
+                    @Override
+                    public void onGranted() {
+                        Toast.makeText(getContext(), "开始下载文件：" + shareFile.getName(), Toast.LENGTH_SHORT).show();
+                        mPresenter.downloadFile();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        Toast.makeText(getContext(), "您拒绝了应用获取设备的文件读写权限，无法正常下载文件", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+                Toast.makeText(getContext(), "开始下载文件：" + shareFile.getName(), Toast.LENGTH_SHORT).show();
+                mPresenter.downloadFile();
+            }
         }
     }
 

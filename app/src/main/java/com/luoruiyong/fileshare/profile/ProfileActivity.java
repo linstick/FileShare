@@ -9,12 +9,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.luoruiyong.fileshare.R;
+import com.luoruiyong.fileshare.base.BaseActivity;
 import com.luoruiyong.fileshare.profile.view.DownloadFileFragment;
 import com.luoruiyong.fileshare.profile.view.MyShareFileFragment;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
 
     private static final String ACTIONBAR_TITLE = "title";
     public static final String ACTIONBAR_TITLE_DOWNLOAD_FILE = "已下载文件";
@@ -36,10 +38,31 @@ public class ProfileActivity extends AppCompatActivity {
 
         initToolbar();
 
-        initFragment();
+        // 检查权限
+        if (!isPermissionGranted()) {
+            // 请求权限
+            requestPermissions(new OnRequestPermissionsResultCallBack() {
+                @Override
+                public void onGranted() {
+                    initFragment();
+                }
+
+                @Override
+                public void onDenied() {
+                    // 用户拒绝授权，退出回到首页
+                    Toast.makeText(ProfileActivity.this, "您拒绝了应用获取设备的文件读写权限，无法正常扫描相关文件", Toast.LENGTH_LONG).show();
+                    ProfileActivity.this.finish();
+                }
+            });
+        } else {
+            // 已获得权限，初始化Fragment
+            initFragment();
+        }
+
     }
 
     private void initToolbar() {
+        mTitle = getIntent().getStringExtra(ACTIONBAR_TITLE);
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -51,7 +74,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void initFragment() {
         // 通过传进来的title参数来决定展示那一个页面
-        mTitle = getIntent().getStringExtra(ACTIONBAR_TITLE);
         Fragment fragment = null;
         switch (mTitle) {
             case ACTIONBAR_TITLE_DOWNLOAD_FILE:

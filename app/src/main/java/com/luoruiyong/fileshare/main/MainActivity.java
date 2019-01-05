@@ -1,20 +1,24 @@
 package com.luoruiyong.fileshare.main;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.luoruiyong.fileshare.Config;
 import com.luoruiyong.fileshare.R;
+import com.luoruiyong.fileshare.base.BaseActivity;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.main.view.HostListFragment;
 import com.luoruiyong.fileshare.main.view.OtherShareFileListFragment;
 import com.luoruiyong.fileshare.profile.ProfileActivity;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends BaseActivity implements
         HostListFragment.OnHostItemClickListener, OtherShareFileListFragment.OnBackToHostFragmentListener{
 
     private static final String TAG = "MainActivity";
@@ -37,6 +41,16 @@ public class MainActivity extends AppCompatActivity implements
 
         mCurrentTag = HOST_TAG;
         getSupportFragmentManager().beginTransaction().add(R.id.fl_container, new HostListFragment(), HOST_TAG).commit();
+
+        if (Config.isFirstRun() && !isPermissionGranted()) {
+            Config.saveRunState(false);
+            getWindow().getDecorView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showTipPermissionDialog();
+                }
+            }, 3000);
+        }
     }
 
     @Override
