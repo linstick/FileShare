@@ -4,6 +4,7 @@ public class ShareFile {
 
     private String mName;
     private long mSize;
+    private String mUrl;
     private boolean mIsDownload;
 
     public String getName() {
@@ -28,6 +29,14 @@ public class ShareFile {
 
     public void setDownload(boolean download) {
         mIsDownload = download;
+    }
+
+    public void setUrl(String url) {
+        this.mUrl = url;
+    }
+
+    public String getUrl() {
+        return this.mUrl;
     }
 
     @Override
