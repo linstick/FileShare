@@ -90,6 +90,8 @@ public class HostListFragment extends Fragment implements HostContract.View, Hos
             mAdapter.setOnItemClickListener(this);
             mListener = (OnHostItemClickListener) getActivity();
         }
+
+        refresh();
     }
 
     // -------Presenter触发的UI事件------------

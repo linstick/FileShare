@@ -3,6 +3,7 @@ package com.luoruiyong.fileshare.profile.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,7 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
     private LinearLayout mNoItemLayout;
     private TextView mNoItemMessageTv;
     private Button mRefreshBtn;
+    private FloatingActionButton mAddShareFileBtn;
 
     private List<ShareFile> mList;
     private MyShareFileListAdapter mAdapter;
@@ -48,6 +50,7 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
         mNoItemLayout = view.findViewById(R.id.ll_no_item_layout);
         mNoItemMessageTv = view.findViewById(R.id.tv_message);
         mRefreshBtn = view.findViewById(R.id.btn_refresh);
+        mAddShareFileBtn = view.findViewById(R.id.btn_add_share_file);
         return view;
     }
 
@@ -78,6 +81,14 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
 
         mNoItemMessageTv.setText("您还没有共享文件哦~");
         mRefreshBtn.setText("刷新");
+
+        mAddShareFileBtn.setVisibility(View.VISIBLE);
+        mAddShareFileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "添加共享文件", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         refresh();
     }
