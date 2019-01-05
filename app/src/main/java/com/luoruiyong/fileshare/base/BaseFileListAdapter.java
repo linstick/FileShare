@@ -1,4 +1,4 @@
-package com.luoruiyong.fileshare.main.adapter;
+package com.luoruiyong.fileshare.base;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,20 +16,20 @@ import com.luoruiyong.fileshare.utils.FileSizeFommatUtil;
 
 import java.util.List;
 
-public class ShareFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class BaseFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<ShareFile> mList;
-    private Host mHost;
-    private OnPartialItemClickListener mListener;
+    protected List<ShareFile> mList;
+    protected Host mHost;
+    protected OnPartialItemClickListener mListener;
 
-    private final int TYPE_HEADER = 0;
-    private final int TYPE_ITEM = 1;
+    protected final int TYPE_HEADER = 0;
+    protected final int TYPE_ITEM = 1;
 
-    public ShareFileListAdapter(List<ShareFile> mList) {
+    public BaseFileListAdapter(List<ShareFile> mList) {
         this.mList = mList;
     }
 
-    public void setOnParticalItemClickListener(OnPartialItemClickListener listener) {
+    public void setOnPartialItemClickListener(OnPartialItemClickListener listener) {
         this.mListener = listener;
     }
 
@@ -73,14 +73,13 @@ public class ShareFileListAdapter extends RecyclerView.Adapter<RecyclerView.View
         } else if (holder instanceof ItemViewHolder) {
             ItemViewHolder viewHolder = (ItemViewHolder) holder;
             final ShareFile shareFile = mList.get(mHost == null ? position : position - 1);
-            viewHolder.mDownLoadIv.setImageResource(shareFile.isDownload() ? R.drawable.ic_finish_gray : R.drawable.ic_file_download_gray);
             viewHolder.mFileNameTv.setText(shareFile.getName());
             viewHolder.mFileSizeTv.setText(FileSizeFommatUtil.format(shareFile.getSize()));
-            viewHolder.mDownLoadIv.setOnClickListener(new View.OnClickListener() {
+            viewHolder.mOperateIv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mListener != null && !shareFile.isDownload()){
-                        mListener.onDownloadViewClick(mHost == null ? position : position - 1);
+                    if (mListener != null){
+                        mListener.onOperateViewClick(mHost == null ? position : position - 1);
                     }
                 }
             });
@@ -103,7 +102,7 @@ public class ShareFileListAdapter extends RecyclerView.Adapter<RecyclerView.View
         return TYPE_ITEM;
     }
 
-    static class HeaderViewHolder extends RecyclerView.ViewHolder {
+    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mBackIv;
         TextView mHostNameTv;
@@ -119,24 +118,24 @@ public class ShareFileListAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    static class ItemViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout mItemLayout;
         TextView mFileNameTv;
         TextView mFileSizeTv;
-        ImageView mDownLoadIv;
+        public ImageView mOperateIv;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             mItemLayout = itemView.findViewById(R.id.rl_item_layout);
             mFileNameTv = itemView.findViewById(R.id.tv_file_name);
             mFileSizeTv = itemView.findViewById(R.id.tv_file_size);
-            mDownLoadIv = itemView.findViewById(R.id.iv_download);
+            mOperateIv = itemView.findViewById(R.id.iv_operate);
         }
     }
 
     public interface OnPartialItemClickListener {
         void onBackViewClick();
-        void onDownloadViewClick(int position);
+        void onOperateViewClick(int position);
     }
 }

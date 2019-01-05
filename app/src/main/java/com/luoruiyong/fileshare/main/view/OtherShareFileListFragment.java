@@ -18,15 +18,15 @@ import android.widget.Toast;
 import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.bean.ShareFile;
-import com.luoruiyong.fileshare.main.adapter.ShareFileListAdapter;
+import com.luoruiyong.fileshare.main.adapter.OtherShareFileListAdapter;
 import com.luoruiyong.fileshare.main.contract.ShareFileContract;
-import com.luoruiyong.fileshare.main.presenter.ShareFilePresenterImpl;
+import com.luoruiyong.fileshare.main.presenter.OtherShareFilePresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShareFileListFragment extends Fragment implements ShareFileContract.View, ShareFileListAdapter.OnPartialItemClickListener {
-    private static final String TAG = "ShareFileListFragment";
+public class OtherShareFileListFragment extends Fragment implements ShareFileContract.View, OtherShareFileListAdapter.OnPartialItemClickListener {
+    private static final String TAG = "OtherShareFileListFragment";
 
     private static final String HOST_TAG = "host_tag";
 
@@ -37,14 +37,14 @@ public class ShareFileListFragment extends Fragment implements ShareFileContract
     private Button mRefreshBtn;
 
     private List<ShareFile> mList;
-    private ShareFileListAdapter mAdapter;
+    private OtherShareFileListAdapter mAdapter;
     private Host mHost;
 
     private ShareFileContract.Presenter mPresenter;
     private OnBackToHostFragmentListener mListener;
 
-    public static ShareFileListFragment newInstance(Host host) {
-        ShareFileListFragment fragment = new ShareFileListFragment();
+    public static OtherShareFileListFragment newInstance(Host host) {
+        OtherShareFileListFragment fragment = new OtherShareFileListFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(HOST_TAG, host);
         fragment.setArguments(bundle);
@@ -68,9 +68,9 @@ public class ShareFileListFragment extends Fragment implements ShareFileContract
         super.onActivityCreated(savedInstanceState);
 
         mHost = (Host) getArguments().getSerializable(HOST_TAG);
-        mPresenter = new ShareFilePresenterImpl(this);
+        mPresenter = new OtherShareFilePresenterImpl(this);
         mList = new ArrayList<>();
-        mAdapter = new ShareFileListAdapter(mList);
+        mAdapter = new OtherShareFileListAdapter(mList);
         mAdapter.setHost(mHost);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
@@ -93,7 +93,7 @@ public class ShareFileListFragment extends Fragment implements ShareFileContract
         mRefreshBtn.setText("刷新");
 
         if (getActivity() instanceof OnBackToHostFragmentListener) {
-            mAdapter.setOnParticalItemClickListener(this);
+            mAdapter.setOnPartialItemClickListener(this);
             mListener = (OnBackToHostFragmentListener) getActivity();
         }
 
@@ -174,8 +174,12 @@ public class ShareFileListFragment extends Fragment implements ShareFileContract
     }
 
     @Override
-    public void onDownloadViewClick(int position) {
-        mPresenter.downloadFile();
+    public void onOperateViewClick(int position) {
+        ShareFile shareFile = mList.get(position);
+        if (!shareFile.isDownload()) {
+            mPresenter.downloadFile();
+            Toast.makeText(getContext(), "开始下载文件：" + shareFile.getName(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     // -------------------------------------

@@ -4,7 +4,9 @@ import com.luoruiyong.fileshare.bean.ShareFile;
 import com.luoruiyong.fileshare.profile.contract.DownloadFileContract;
 import com.luoruiyong.fileshare.profile.model.DownloadFileModel;
 
-public class DownloadFilePresenterImpl implements DownloadFileContract.Presenter {
+import java.util.List;
+
+public class DownloadFilePresenterImpl implements DownloadFileContract.Presenter, DownloadFileModel.OnScanDownloadFileFinishListener {
 
     private DownloadFileContract.View mView;
     private DownloadFileModel mModel;
@@ -12,6 +14,7 @@ public class DownloadFilePresenterImpl implements DownloadFileContract.Presenter
     public DownloadFilePresenterImpl(DownloadFileContract.View view) {
         this.mView = view;
         this.mModel = new DownloadFileModel();
+        this.mModel.setOnScanDownloadFileFinishListener(this);
     }
 
     @Override
@@ -21,6 +24,11 @@ public class DownloadFilePresenterImpl implements DownloadFileContract.Presenter
 
     @Override
     public void getAllDownloadFiles() {
+        mModel.startScanDownloadFiles();
+    }
 
+    @Override
+    public void onScanDownloadFileFinish(List<ShareFile> list) {
+        mView.updateDownloadFileList(list);
     }
 }

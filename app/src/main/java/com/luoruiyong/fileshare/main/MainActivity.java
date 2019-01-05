@@ -11,10 +11,11 @@ import android.widget.Toast;
 import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.main.view.HostListFragment;
-import com.luoruiyong.fileshare.main.view.ShareFileListFragment;
+import com.luoruiyong.fileshare.main.view.OtherShareFileListFragment;
+import com.luoruiyong.fileshare.profile.ProfileActivity;
 
 public class MainActivity extends AppCompatActivity implements
-        HostListFragment.OnHostItemClickListener, ShareFileListFragment.OnBackToHostFragmentListener{
+        HostListFragment.OnHostItemClickListener, OtherShareFileListFragment.OnBackToHostFragmentListener{
 
     private static final String TAG = "MainActivity";
     private static long sLastBackPressTime = 0;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_container);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -53,29 +54,21 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_history:
-                browseDownloadHistory();
+            case R.id.menu_download_history:
+                ProfileActivity.startAction(MainActivity.this, ProfileActivity.ACTIONBAR_TITLE_DOWNLOAD_FILE);
                 break;
-            case R.id.menu_profile:
-                browseProfile();
+            case R.id.menu_my_share_file:
+                ProfileActivity.startAction(MainActivity.this, ProfileActivity.ACTIONBAR_TITLE_MY_SHARE_FILE);
                 break;
         }
         return true;
-    }
-
-    private void browseProfile() {
-        Toast.makeText(MainActivity.this, "查看我的共享文件", Toast.LENGTH_LONG).show();
-    }
-
-    private void browseDownloadHistory() {
-        Toast.makeText(MainActivity.this, "查看下载历史", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onHostItemClick(Host host) {
         FragmentTransaction bt = getSupportFragmentManager().beginTransaction();
         bt.addToBackStack(HOST_TAG);
-        bt.replace(R.id.fl_container, ShareFileListFragment.newInstance(host), SHARE_FILE_TAG);
+        bt.replace(R.id.fl_container, OtherShareFileListFragment.newInstance(host), SHARE_FILE_TAG);
         bt.commit();
 
         mCurrentTag = SHARE_FILE_TAG;

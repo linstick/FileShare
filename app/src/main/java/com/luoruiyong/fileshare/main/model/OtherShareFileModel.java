@@ -6,7 +6,7 @@ import com.luoruiyong.fileshare.bean.ShareFile;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShareFileModel {
+public class OtherShareFileModel {
 
     private OnShareFileDataReceiveListener mListener;
 

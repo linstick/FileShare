@@ -9,8 +9,8 @@ import java.util.List;
 public interface MyShareFileContract {
 
     interface Presenter extends BasePresenter {
-        void addShareFile();
-        void deleteShareFile(ShareFile file);
+        void addShareFile(String url);
+        void removeShareFile(ShareFile file);
         void getAllShareFiles();
     }
 

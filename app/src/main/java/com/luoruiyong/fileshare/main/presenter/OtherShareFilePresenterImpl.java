@@ -3,18 +3,18 @@ package com.luoruiyong.fileshare.main.presenter;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.bean.ShareFile;
 import com.luoruiyong.fileshare.main.contract.ShareFileContract;
-import com.luoruiyong.fileshare.main.model.ShareFileModel;
+import com.luoruiyong.fileshare.main.model.OtherShareFileModel;
 
 import java.util.List;
 
-public class ShareFilePresenterImpl implements ShareFileContract.Presenter, ShareFileModel.OnShareFileDataReceiveListener {
+public class OtherShareFilePresenterImpl implements ShareFileContract.Presenter, OtherShareFileModel.OnShareFileDataReceiveListener {
 
     private ShareFileContract.View mView;
-    private ShareFileModel mModel;
+    private OtherShareFileModel mModel;
 
-    public ShareFilePresenterImpl(ShareFileContract.View view) {
+    public OtherShareFilePresenterImpl(ShareFileContract.View view) {
         this.mView = view;
-        this.mModel = new ShareFileModel();
+        this.mModel = new OtherShareFileModel();
         this.mModel.setOnShareFileDataReceiveListener(this);
     }
 

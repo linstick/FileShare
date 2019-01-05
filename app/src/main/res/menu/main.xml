@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_history"
+        android:id="@+id/menu_download_history"
         android:title="已下载文件"
         android:icon="@drawable/ic_file_download_white"
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/menu_profile"
+        android:id="@+id/menu_my_share_file"
         android:title="我的共享文件"
         android:icon="@drawable/ic_folder_shared_white"
         app:showAsAction="always">
