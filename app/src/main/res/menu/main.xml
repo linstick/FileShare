@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_history"
+        android:title="已下载文件"
+        android:icon="@drawable/ic_file_download_white"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_profile"
+        android:title="我的共享文件"
+        android:icon="@drawable/ic_folder_shared_white"
+        app:showAsAction="always">
+
+    </item>
+
+</menu>
