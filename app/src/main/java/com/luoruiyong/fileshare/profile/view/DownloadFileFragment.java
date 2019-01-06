@@ -1,5 +1,7 @@
 package com.luoruiyong.fileshare.profile.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,12 +20,10 @@ import android.widget.Toast;
 import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.base.BaseFileListAdapter;
 import com.luoruiyong.fileshare.bean.ShareFile;
-import com.luoruiyong.fileshare.main.adapter.OtherShareFileListAdapter;
+import com.luoruiyong.fileshare.model.DataSource;
 import com.luoruiyong.fileshare.profile.adapter.DownloadFileListAdapter;
 import com.luoruiyong.fileshare.profile.contract.DownloadFileContract;
-import com.luoruiyong.fileshare.profile.presenter.DownloadFilePresenterImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadFileFragment extends Fragment implements DownloadFileContract.View, BaseFileListAdapter.OnPartialItemClickListener {
@@ -38,7 +38,7 @@ public class DownloadFileFragment extends Fragment implements DownloadFileContra
     private List<ShareFile> mList;
     private DownloadFileListAdapter mAdapter;
 
-    private DownloadFileContract.Presenter mPresenter;
+//    private DownloadFileContract.Presenter mPresenter;
 
     @Nullable
     @Override
@@ -56,31 +56,35 @@ public class DownloadFileFragment extends Fragment implements DownloadFileContra
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mPresenter = new DownloadFilePresenterImpl(this);
-        mList = new ArrayList<>();
+//        mPresenter = new DownloadFilePresenterImpl(this);
+        mList = DataSource.getDownloadShareFileList();
         mAdapter = new DownloadFileListAdapter(mList);
         mAdapter.setOnPartialItemClickListener(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
 
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
+//        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                refresh();
+//            }
+//        });
 
-        mRefreshBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                refresh();
-            }
-        });
+        mRefreshLayout.setEnabled(false);
+        mRefreshBtn.setVisibility(View.GONE);
+//        mRefreshBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                refresh();
+//            }
+//        });
 
         mNoItemMessageTv.setText("下载记录空空如也~");
-        mRefreshBtn.setText("刷新");
-
-        refresh();
+        if (mList == null || mList.size() == 0) {
+            mNoItemLayout.setVisibility(View.VISIBLE);
+        } else {
+            mNoItemLayout.setVisibility(View.GONE);
+        }
     }
 
     // -------Presenter触发的UI事件------------
@@ -110,13 +114,13 @@ public class DownloadFileFragment extends Fragment implements DownloadFileContra
 
     // -----------------------------------------
 
-    public void refresh() {
-        mNoItemLayout.setVisibility(View.GONE);
-        mRefreshLayout.setRefreshing(true);
-        mList.clear();
-        mAdapter.notifyDataSetChanged();
-        mPresenter.getAllDownloadFiles();
-    }
+//    public void refresh() {
+//        mNoItemLayout.setVisibility(View.GONE);
+//        mRefreshLayout.setRefreshing(true);
+//        mList.clear();
+//        mAdapter.notifyDataSetChanged();
+////        mPresenter.getAllDownloadFiles();
+//    }
 
     // ---------列表项事件回调-------------------
     @Override
@@ -125,10 +129,23 @@ public class DownloadFileFragment extends Fragment implements DownloadFileContra
     }
 
     @Override
-    public void onOperateViewClick(int position) {
+    public void onOperateViewClick(final int position) {
         // 此页面中是删除操作
-        Toast.makeText(getContext(), "删除 " + position, Toast.LENGTH_SHORT).show();
-        mPresenter.deleteFile(mList.get(position).getUrl());
+        new AlertDialog.Builder(getContext())
+                .setTitle("删除")
+                .setMessage("您确定要永久删除“" + mList.get(position).getName() +"”文件吗？")
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        DataSource.deleteDownloadShareFile(position);
+                        mAdapter.notifyDataSetChanged();
+                        Toast.makeText(getContext(), "删除成功 ", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+
+//        mPresenter.deleteFile(mList.get(position).getUrl());
     }
 
     // -------------------------------------

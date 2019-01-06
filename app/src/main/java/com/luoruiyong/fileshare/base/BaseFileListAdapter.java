@@ -124,6 +124,7 @@ public class BaseFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView mFileNameTv;
         TextView mFileSizeTv;
         public ImageView mOperateIv;
+        public TextView mDownloadingMsgTv;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -131,6 +132,7 @@ public class BaseFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             mFileNameTv = itemView.findViewById(R.id.tv_file_name);
             mFileSizeTv = itemView.findViewById(R.id.tv_file_size);
             mOperateIv = itemView.findViewById(R.id.iv_operate);
+            mDownloadingMsgTv = itemView.findViewById(R.id.tv_downloading_msg);
         }
     }
 

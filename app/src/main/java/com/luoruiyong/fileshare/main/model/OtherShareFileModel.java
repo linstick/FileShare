@@ -33,7 +33,7 @@ public class OtherShareFileModel {
                     ShareFile file = new ShareFile();
                     file.setName("Android 从入门到放弃 " + (i + 1));
                     file.setSize((int)(Math.random() * 100000));
-                    file.setDownload(i % 4 == 0);
+                    file.setStatus(i % 4 == 0 ? ShareFile.STATUS_DOWNLOADED : ShareFile.STATUS_SHARED);
                     list.add(file);
                 }
                 if (mListener != null) {

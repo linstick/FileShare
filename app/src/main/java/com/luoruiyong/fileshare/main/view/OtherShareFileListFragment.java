@@ -175,17 +175,16 @@ public class OtherShareFileListFragment extends Fragment implements ShareFileCon
     }
 
     @Override
-    public void onOperateViewClick(int position) {
+    public void onOperateViewClick(final int position) {
         final ShareFile shareFile = mList.get(position);
-        if (!shareFile.isDownload()) {
+        if (shareFile.getStatus() == ShareFile.STATUS_SHARED) {
             // 下载之前需要检查权限
             BaseActivity activity = (BaseActivity) getActivity();
             if (!activity.isPermissionGranted()) {
                 activity.requestPermissions(new BaseActivity.OnRequestPermissionsResultCallBack() {
                     @Override
                     public void onGranted() {
-                        Toast.makeText(getContext(), "开始下载文件：" + shareFile.getName(), Toast.LENGTH_SHORT).show();
-                        mPresenter.downloadFile();
+                        download(position);
                     }
 
                     @Override
@@ -194,14 +193,22 @@ public class OtherShareFileListFragment extends Fragment implements ShareFileCon
                     }
                 });
             } else {
-                Toast.makeText(getContext(), "开始下载文件：" + shareFile.getName(), Toast.LENGTH_SHORT).show();
-                mPresenter.downloadFile();
+                download(position);
             }
         }
     }
 
     // -------------------------------------
 
+
+    private void download(int position) {
+        // 已经获取到权限，开始执行下载操作
+        ShareFile shareFile = mList.get(position);
+        shareFile.setStatus(ShareFile.STATUS_DOWNLOADING);
+        mAdapter.notifyItemChanged(mHost == null ? position : position + 1);
+        Toast.makeText(getContext(), "开始下载文件：" + shareFile.getName(), Toast.LENGTH_SHORT).show();
+        mPresenter.downloadFile();
+    }
 
     public interface OnBackToHostFragmentListener {
         void onBackToHostFragment();

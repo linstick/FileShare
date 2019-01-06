@@ -23,8 +23,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/tv_count"
-            android:layout_marginLeft="5dp">
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="60dp">
 
             <TextView
                 android:id="@+id/tv_file_name"
@@ -51,8 +51,16 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/tv_downloading_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_file_download_gray"/>
+            android:text="正在下载"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

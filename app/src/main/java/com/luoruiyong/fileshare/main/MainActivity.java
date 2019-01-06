@@ -16,6 +16,7 @@ import com.luoruiyong.fileshare.base.BaseActivity;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.main.view.HostListFragment;
 import com.luoruiyong.fileshare.main.view.OtherShareFileListFragment;
+import com.luoruiyong.fileshare.model.DataSource;
 import com.luoruiyong.fileshare.profile.ProfileActivity;
 
 public class MainActivity extends BaseActivity implements
@@ -47,14 +48,26 @@ public class MainActivity extends BaseActivity implements
             mCurrentTag = savedInstanceState.getString(KEY_ACTIONBAR_TITLE);
         }
 
-        if (Config.isFirstRun() && !isPermissionGranted()) {
+        if (!isPermissionGranted()) {
             Config.saveRunState(false);
             getWindow().getDecorView().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    showTipPermissionDialog();
+                    showTipPermissionDialog(new OnRequestPermissionsResultCallBack() {
+                        @Override
+                        public void onGranted() {
+                            DataSource.preload();
+                        }
+
+                        @Override
+                        public void onDenied() {
+
+                        }
+                    });
                 }
-            }, 3000);
+            }, 2000);
+        } else {
+            DataSource.preload();
         }
     }
 

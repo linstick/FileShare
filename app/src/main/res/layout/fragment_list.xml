@@ -29,6 +29,7 @@
             android:id="@+id/tv_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:text="在当前局域网内暂时没有搜索到共享主机"/>
 
         <Button

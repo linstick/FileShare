@@ -34,7 +34,6 @@ public class DownloadFileModel {
                     ShareFile file = new ShareFile();
                     file.setName("Android 从入门到放弃 " + (i + 1));
                     file.setSize((int)(Math.random() * 100000));
-                    file.setDownload(true);
                     list.add(file);
                 }
                 if (mListener != null) {

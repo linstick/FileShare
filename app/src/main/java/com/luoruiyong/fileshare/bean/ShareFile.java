@@ -2,10 +2,17 @@ package com.luoruiyong.fileshare.bean;
 
 public class ShareFile {
 
+    public final static int STATUS_DOWNLOADING = 1;
+    public final static int STATUS_DOWNLOADED = 2;
+    public final static int STATUS_SHARED = 3;
+
     private String mName;
     private long mSize;
     private String mUrl;
-    private boolean mIsDownload;
+    private int mStatus;
+
+    public ShareFile() {
+    }
 
     public String getName() {
         return mName;
@@ -23,14 +30,6 @@ public class ShareFile {
         this.mSize = size;
     }
 
-    public boolean isDownload() {
-        return mIsDownload;
-    }
-
-    public void setDownload(boolean download) {
-        mIsDownload = download;
-    }
-
     public void setUrl(String url) {
         this.mUrl = url;
     }
@@ -39,12 +38,21 @@ public class ShareFile {
         return this.mUrl;
     }
 
+    public int getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(int status) {
+        this.mStatus = status;
+    }
+
     @Override
     public String toString() {
         return "ShareFile{" +
                 "mName='" + mName + '\'' +
                 ", mSize=" + mSize +
-                ", mIsDownload=" + mIsDownload +
+                ", mUrl='" + mUrl + '\'' +
+                ", mStatus=" + mStatus +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package com.luoruiyong.fileshare.profile.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,11 +21,10 @@ import android.widget.Toast;
 import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.base.BaseFileListAdapter;
 import com.luoruiyong.fileshare.bean.ShareFile;
+import com.luoruiyong.fileshare.model.DataSource;
 import com.luoruiyong.fileshare.profile.adapter.MyShareFileListAdapter;
 import com.luoruiyong.fileshare.profile.contract.MyShareFileContract;
-import com.luoruiyong.fileshare.profile.presenter.MyShareFilePresenterImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MyShareFileFragment extends Fragment implements MyShareFileContract.View, BaseFileListAdapter.OnPartialItemClickListener {
@@ -39,7 +40,7 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
     private List<ShareFile> mList;
     private MyShareFileListAdapter mAdapter;
 
-    private MyShareFileContract.Presenter mPresenter;
+//    private MyShareFileContract.Presenter mPresenter;
 
     @Nullable
     @Override
@@ -58,29 +59,35 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mPresenter = new MyShareFilePresenterImpl(this);
-        mList = new ArrayList<>();
+//        mPresenter = new MyShareFilePresenterImpl(this);
+        mList = DataSource.getMySharedFileList();
         mAdapter = new MyShareFileListAdapter(mList);
         mAdapter.setOnPartialItemClickListener(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
 
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
+//        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                refresh();
+//            }
+//        });
 
-        mRefreshBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                refresh();
-            }
-        });
+//        mRefreshBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                refresh();
+//            }
+//        });
 
+        mRefreshLayout.setEnabled(false);
         mNoItemMessageTv.setText("您还没有共享文件哦~");
-        mRefreshBtn.setText("刷新");
+        mRefreshBtn.setVisibility(View.GONE);
+        if (mList == null || mList.size() == 0) {
+            mNoItemLayout.setVisibility(View.VISIBLE);
+        } else {
+            mNoItemLayout.setVisibility(View.GONE);
+        }
 
         mAddShareFileBtn.setVisibility(View.VISIBLE);
         mAddShareFileBtn.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +97,7 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
             }
         });
 
-        refresh();
+//        refresh();
     }
 
     // -------Presenter触发的UI事件------------
@@ -119,13 +126,13 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
 
     // -----------------------------------------
 
-    public void refresh() {
-        mNoItemLayout.setVisibility(View.GONE);
-        mRefreshLayout.setRefreshing(true);
-        mList.clear();
-        mAdapter.notifyDataSetChanged();
-        mPresenter.getAllShareFiles();
-    }
+//    public void refresh() {
+//        mNoItemLayout.setVisibility(View.GONE);
+//        mRefreshLayout.setRefreshing(true);
+//        mList.clear();
+//        mAdapter.notifyDataSetChanged();
+//        mPresenter.getAllShareFiles();
+//    }
 
     // ---------列表项事件回调-------------------
     @Override
@@ -134,10 +141,23 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
     }
 
     @Override
-    public void onOperateViewClick(int position) {
+    public void onOperateViewClick(final int position) {
         // 此页面中是移除操作
+        new AlertDialog.Builder(getContext())
+                .setTitle("删除")
+                .setMessage("您确定要永久删除“" + mList.get(position).getName() +"”文件吗？")
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        DataSource.deleteDownloadShareFile(position);
+                        mAdapter.notifyDataSetChanged();
+                        Toast.makeText(getContext(), "删除成功 ", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
         Toast.makeText(getContext(), "移除 " + position, Toast.LENGTH_SHORT).show();
-        mPresenter.removeShareFile(mList.get(position));
+//        mPresenter.removeShareFile(mList.get(position));
     }
 
     // -------------------------------------

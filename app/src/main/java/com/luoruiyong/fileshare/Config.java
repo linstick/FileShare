@@ -14,6 +14,8 @@ public class Config {
     public final static int TCP_PORT = 10240;
     // UDP端口号，用户查询当前内网中有哪些共享主机时使用，或直接查询某一个文件时广播使用
     public final static int UDP_PORT = 10720;
+    // UDP广播地址，用于新用户查询主机
+    public final static String BOARDCAST_IP_ADDRESS = "230.0.0.1";
 
     // 保存基本的设备数据到SharedPreferences中
     private static SharedPreferences mPref;

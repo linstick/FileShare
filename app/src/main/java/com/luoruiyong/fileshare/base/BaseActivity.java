@@ -89,7 +89,7 @@ public class BaseActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void showTipPermissionDialog() {
+    public void showTipPermissionDialog(OnRequestPermissionsResultCallBack callBack) {
         if (isFinishingOrFinished()) {
             return;
         }
@@ -101,7 +101,7 @@ public class BaseActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //引导用户至设置页手动授权
-                       requestPermissions(null);
+                       requestPermissions(mResultCallback);
                     }
                 })
                 .setNegativeButton("取消", null)
