@@ -19,9 +19,15 @@ import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.base.BaseActivity;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.bean.ShareFile;
+import com.luoruiyong.fileshare.eventbus.DataChangeEvent;
 import com.luoruiyong.fileshare.main.adapter.OtherShareFileListAdapter;
 import com.luoruiyong.fileshare.main.contract.ShareFileContract;
 import com.luoruiyong.fileshare.main.presenter.OtherShareFilePresenterImpl;
+import com.luoruiyong.fileshare.model.DataSource;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +76,7 @@ public class OtherShareFileListFragment extends Fragment implements ShareFileCon
 
         mHost = (Host) getArguments().getSerializable(HOST_TAG);
         mPresenter = new OtherShareFilePresenterImpl(this);
-        mList = new ArrayList<>();
+        mList = DataSource.getOtherSharedFileList();
         mAdapter = new OtherShareFileListAdapter(mList);
         mAdapter.setHost(mHost);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -99,6 +105,41 @@ public class OtherShareFileListFragment extends Fragment implements ShareFileCon
         }
 
         refresh();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDataChangeEvent(DataChangeEvent event) {
+        switch (event) {
+            case OTHER_SHARE_FILE_CHANGE:
+                updateUi();
+                break;
+        }
+    }
+
+    private void updateUi() {
+        mHost.setFileCount(mList.size());
+        if (mList.size() == 0) {
+            mNoItemLayout.setVisibility(View.VISIBLE);
+        } else {
+            mNoItemLayout.setVisibility(View.GONE);
+        }
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
+        mAdapter.notifyDataSetChanged();
+
     }
 
     // -------Presenter触发的UI事件------------
@@ -160,7 +201,7 @@ public class OtherShareFileListFragment extends Fragment implements ShareFileCon
     public void refresh() {
         mNoItemLayout.setVisibility(View.GONE);
         mRefreshLayout.setRefreshing(true);
-        mList.clear();
+        DataSource.clearOtherShareFileList();
         mAdapter.notifyDataSetChanged();
         mPresenter.refresh(mHost);
     }

@@ -2,6 +2,7 @@ package com.luoruiyong.fileshare.model;
 
 import android.util.Log;
 
+import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.bean.ShareFile;
 
 import java.io.File;
@@ -12,6 +13,8 @@ public class DataSource {
     private static final String TAG = "DataSource";
     private static List<ShareFile> sDownloadShareFileList = new ArrayList<>();
     private static List<ShareFile> sMySharedFileList = new ArrayList<>();
+    private static List<Host> sHostList = new ArrayList<>();
+    private static List<ShareFile> sOtherSharedFileList = new ArrayList<>();
 
     public static void preload() {
         sDownloadShareFileList = getDownloadShareFileList();
@@ -62,5 +65,30 @@ public class DataSource {
         if (position >= 0 && position < sMySharedFileList.size()) {
             sMySharedFileList.remove(position);
         }
+    }
+
+    public static List<Host> getHostList() {
+        return sHostList;
+    }
+
+    public static void addHost(Host host) {
+        sHostList.add(host);
+    }
+
+    public static void clearHostList() {
+        sHostList.clear();
+    }
+
+    public static List<ShareFile> getOtherSharedFileList() {
+        return sOtherSharedFileList;
+    }
+
+    public static void clearOtherShareFileList() {
+        sOtherSharedFileList.clear();
+    }
+
+    public static void updateOtherShareFileList(List<ShareFile> list) {
+        sOtherSharedFileList.clear();
+        sOtherSharedFileList.addAll(list);
     }
 }

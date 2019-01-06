@@ -17,9 +17,15 @@ import android.widget.Toast;
 
 import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.bean.Host;
+import com.luoruiyong.fileshare.eventbus.DataChangeEvent;
 import com.luoruiyong.fileshare.main.adapter.HostListAdapter;
 import com.luoruiyong.fileshare.main.contract.HostContract;
 import com.luoruiyong.fileshare.main.presenter.HostPresenterImpl;
+import com.luoruiyong.fileshare.model.DataSource;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +45,12 @@ public class HostListFragment extends Fragment implements HostContract.View, Hos
     private HostContract.Presenter mPresenter;
     private OnHostItemClickListener mListener;
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,9 +68,7 @@ public class HostListFragment extends Fragment implements HostContract.View, Hos
         super.onActivityCreated(savedInstanceState);
 
         mPresenter = new HostPresenterImpl(this);
-        if (mList == null) {
-            mList = new ArrayList<>();
-        }
+        mList = DataSource.getHostList();
         if (mList.size() == 0) {
             mNoItemLayout.setVisibility(View.VISIBLE);
         } else {
@@ -95,6 +105,12 @@ public class HostListFragment extends Fragment implements HostContract.View, Hos
             refresh();
         }
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     // -------Presenter触发的UI事件------------
@@ -137,7 +153,7 @@ public class HostListFragment extends Fragment implements HostContract.View, Hos
     public void refresh() {
         mRefreshLayout.setRefreshing(true);
         mNoItemLayout.setVisibility(View.GONE);
-        mList.clear();
+        DataSource.clearHostList();
         mAdapter.notifyDataSetChanged();
         mPresenter.refresh();
     }
@@ -154,5 +170,27 @@ public class HostListFragment extends Fragment implements HostContract.View, Hos
 
     public interface OnHostItemClickListener {
         void onHostItemClick(Host host);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDataChangeEvent(DataChangeEvent event) {
+        switch (event) {
+            case HOST_DATA_CHANGE:
+                updateUi();
+                break;
+        }
+    }
+
+    private void updateUi() {
+        if (mList.size() == 0) {
+            mNoItemLayout.setVisibility(View.VISIBLE);
+        } else {
+            mNoItemLayout.setVisibility(View.GONE);
+        }
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
+        mAdapter.notifyDataSetChanged();
+
     }
 }
