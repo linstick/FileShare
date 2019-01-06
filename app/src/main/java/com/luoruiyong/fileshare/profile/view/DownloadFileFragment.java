@@ -20,9 +20,15 @@ import android.widget.Toast;
 import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.base.BaseFileListAdapter;
 import com.luoruiyong.fileshare.bean.ShareFile;
+import com.luoruiyong.fileshare.eventbus.DataChangeEvent;
+import com.luoruiyong.fileshare.eventbus.DownloadEvent;
 import com.luoruiyong.fileshare.model.DataSource;
 import com.luoruiyong.fileshare.profile.adapter.DownloadFileListAdapter;
 import com.luoruiyong.fileshare.profile.contract.DownloadFileContract;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -84,6 +90,25 @@ public class DownloadFileFragment extends Fragment implements DownloadFileContra
             mNoItemLayout.setVisibility(View.VISIBLE);
         } else {
             mNoItemLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadEvent(DownloadEvent event) {
+        if (event.isSuccess()) {
+            mAdapter.notifyDataSetChanged();
         }
     }
 

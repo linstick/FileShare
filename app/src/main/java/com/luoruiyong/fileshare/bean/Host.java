@@ -43,4 +43,23 @@ public class Host implements Serializable{
                 ", mFileCount=" + mFileCount +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        if (mIpAddress == null) {
+            return 0;
+        }
+        return mIpAddress.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Host) || obj == null) {
+            return false;
+        }
+        return this.mIpAddress.equals(((Host)obj).mIpAddress);
+    }
 }

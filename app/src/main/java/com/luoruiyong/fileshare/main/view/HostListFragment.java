@@ -27,7 +27,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HostListFragment extends Fragment implements HostContract.View, HostListAdapter.OnItemClickListener {
@@ -173,8 +172,8 @@ public class HostListFragment extends Fragment implements HostContract.View, Hos
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDataChangeEvent(DataChangeEvent event) {
-        switch (event) {
+    public void onDataChangeEvent(DataChangeEvent dataChangeEvent) {
+        switch (dataChangeEvent) {
             case HOST_DATA_CHANGE:
                 updateUi();
                 break;

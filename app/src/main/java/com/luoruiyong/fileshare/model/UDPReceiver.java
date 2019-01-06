@@ -1,7 +1,6 @@
 package com.luoruiyong.fileshare.model;
 
 
-import android.support.v7.widget.DialogTitle;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -10,14 +9,12 @@ import com.luoruiyong.fileshare.Config;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.bean.PacketContent;
 import com.luoruiyong.fileshare.bean.ShareFile;
-import com.luoruiyong.fileshare.profile.ProfileActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import static com.luoruiyong.fileshare.eventbus.DataChangeEvent.HOST_DATA_CHANGE;
@@ -32,7 +29,7 @@ import static com.luoruiyong.fileshare.eventbus.DataChangeEvent.OTHER_SHARE_FILE
 public class UDPReceiver implements Runnable {
     private static final String TAG = "UDPReceiver";
 
-    private static UDPReceiver mReceiver;
+    private static volatile UDPReceiver sReceiver;
     private boolean mIsStart = false;
     private boolean mIsHostResponseTimeOut = false;
     private boolean mIsFileResponseTimeOut = false;
@@ -43,14 +40,14 @@ public class UDPReceiver implements Runnable {
     }
 
     public static UDPReceiver getInstance() {
-        if (mReceiver == null) {
+        if (sReceiver == null) {
             synchronized (UDPReceiver.class) {
-                if (mReceiver == null) {
-                    mReceiver = new UDPReceiver();
+                if (sReceiver == null) {
+                    sReceiver = new UDPReceiver();
                 }
             }
         }
-        return mReceiver;
+        return sReceiver;
     }
 
     private void parsePacketAndResponseIfNeed(DatagramPacket packet) {
@@ -90,6 +87,9 @@ public class UDPReceiver implements Runnable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            mReceiveSocket.close();
+            mIsStart = false;
         }
     }
 

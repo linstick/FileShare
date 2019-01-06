@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,21 +20,22 @@ import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.base.BaseActivity;
 import com.luoruiyong.fileshare.bean.Host;
 import com.luoruiyong.fileshare.bean.ShareFile;
+import com.luoruiyong.fileshare.eventbus.DownloadEvent;
 import com.luoruiyong.fileshare.eventbus.DataChangeEvent;
 import com.luoruiyong.fileshare.main.adapter.OtherShareFileListAdapter;
 import com.luoruiyong.fileshare.main.contract.ShareFileContract;
 import com.luoruiyong.fileshare.main.presenter.OtherShareFilePresenterImpl;
+import com.luoruiyong.fileshare.model.ClientDownloadTask;
 import com.luoruiyong.fileshare.model.DataSource;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OtherShareFileListFragment extends Fragment implements ShareFileContract.View, OtherShareFileListAdapter.OnPartialItemClickListener {
-    private static final String TAG = "OtherShareFileListFragment";
+    private static final String TAG = "ShareFileListFragment";
 
     private static final String HOST_TAG = "host_tag";
 
@@ -120,11 +122,27 @@ public class OtherShareFileListFragment extends Fragment implements ShareFileCon
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDataChangeEvent(DataChangeEvent event) {
-        switch (event) {
+    public void onEvent(DataChangeEvent dataChangeEvent) {
+        switch (dataChangeEvent) {
             case OTHER_SHARE_FILE_CHANGE:
                 updateUi();
                 break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadEvent(DownloadEvent event) {
+        if (mHost.getIpAddress().equals(event.getIpAddress())) {
+            int i = 1;
+            for (ShareFile shareFile : mList) {
+                if (shareFile.getName().equals(event.getFileName())) {
+                    shareFile.setStatus(event.isSuccess() ? ShareFile.STATUS_DOWNLOADED : ShareFile.STATUS_SHARED);
+                    Toast.makeText(getContext(), event.isSuccess() ? event.getFileName() + "下载成功" : "下载失败", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                i++;
+            }
+            mAdapter.notifyItemChanged(i);
         }
     }
 
@@ -248,7 +266,8 @@ public class OtherShareFileListFragment extends Fragment implements ShareFileCon
         shareFile.setStatus(ShareFile.STATUS_DOWNLOADING);
         mAdapter.notifyItemChanged(mHost == null ? position : position + 1);
         Toast.makeText(getContext(), "开始下载文件：" + shareFile.getName(), Toast.LENGTH_SHORT).show();
-        mPresenter.downloadFile();
+//        mPresenter.downloadFile();
+        new Thread(new ClientDownloadTask(mHost.getIpAddress(), shareFile.getUrl(), shareFile.getName())).start();
     }
 
     public interface OnBackToHostFragmentListener {

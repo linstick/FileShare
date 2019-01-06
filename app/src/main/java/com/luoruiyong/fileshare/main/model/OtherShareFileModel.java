@@ -10,7 +10,6 @@ import com.luoruiyong.fileshare.model.UDPUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.luoruiyong.fileshare.Config.WAIT_FOR_RESPONSE_TIMEOUT;
