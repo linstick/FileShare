@@ -105,14 +105,13 @@ public class OtherShareFileListFragment extends Fragment implements ShareFileCon
             mAdapter.setOnPartialItemClickListener(this);
             mListener = (OnBackToHostFragmentListener) getActivity();
         }
-
-        refresh();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+        refresh();
     }
 
     @Override

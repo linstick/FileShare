@@ -44,12 +44,6 @@ public class HostListFragment extends Fragment implements HostContract.View, Hos
     private HostContract.Presenter mPresenter;
     private OnHostItemClickListener mListener;
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,11 +93,16 @@ public class HostListFragment extends Fragment implements HostContract.View, Hos
             mAdapter.setOnItemClickListener(this);
             mListener = (OnHostItemClickListener) getActivity();
         }
+    }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
         if (mList == null || mList.size() == 0) {
             refresh();
         }
-
     }
 
     @Override
