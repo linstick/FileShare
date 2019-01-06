@@ -2,6 +2,7 @@ package com.luoruiyong.fileshare.profile.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +24,21 @@ import com.luoruiyong.fileshare.R;
 import com.luoruiyong.fileshare.base.BaseFileListAdapter;
 import com.luoruiyong.fileshare.bean.ShareFile;
 import com.luoruiyong.fileshare.model.DataSource;
+import com.luoruiyong.fileshare.model.FileChooseUtil;
+import com.luoruiyong.fileshare.model.FileUtil;
 import com.luoruiyong.fileshare.profile.adapter.MyShareFileListAdapter;
 import com.luoruiyong.fileshare.profile.contract.MyShareFileContract;
 
 import java.util.List;
 
-public class MyShareFileFragment extends Fragment implements MyShareFileContract.View, BaseFileListAdapter.OnPartialItemClickListener {
+import static android.app.Activity.RESULT_OK;
+
+
+public class MyShareFileFragment extends Fragment implements
+        MyShareFileContract.View,
+        BaseFileListAdapter.OnPartialItemClickListener {
     private static final String TAG = "MyShareFileFragment";
+    private static final int CHOOSE_FILE_REQUEST_CODE = 1;
 
     private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
@@ -93,7 +103,9 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
         mAddShareFileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "添加共享文件", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");
+                getActivity().startActivityForResult(intent, CHOOSE_FILE_REQUEST_CODE);
             }
         });
 
@@ -144,21 +156,41 @@ public class MyShareFileFragment extends Fragment implements MyShareFileContract
     public void onOperateViewClick(final int position) {
         // 此页面中是移除操作
         new AlertDialog.Builder(getContext())
-                .setTitle("删除")
-                .setMessage("您确定要永久删除“" + mList.get(position).getName() +"”文件吗？")
+                .setTitle("提示")
+                .setMessage("您确定要移除“" + mList.get(position).getName() +"”共享文件吗？这次移除并不会删除本地文件。")
                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        DataSource.deleteDownloadShareFile(position);
+                        DataSource.removeMySharedFile(position);
                         mAdapter.notifyDataSetChanged();
-                        Toast.makeText(getContext(), "删除成功 ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "已移除 ", Toast.LENGTH_SHORT).show();
+                        if (mList.size() == 0) {
+                            mNoItemLayout.setVisibility(View.VISIBLE);
+                        }
                     }
                 })
                 .setNegativeButton("取消", null)
                 .show();
-        Toast.makeText(getContext(), "移除 " + position, Toast.LENGTH_SHORT).show();
 //        mPresenter.removeShareFile(mList.get(position));
     }
 
     // -------------------------------------
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CHOOSE_FILE_REQUEST_CODE && resultCode == RESULT_OK) {
+            String url = FileChooseUtil.getChooseFileResultPath(getContext(), data.getData());
+            Log.d(TAG, "onActivityResult: choose file url = " + url);
+            if (url != null) {
+                ShareFile shareFile = FileUtil.localFileToShareFile(url);
+                DataSource.addMySharedFile(shareFile);
+                mAdapter.notifyDataSetChanged();
+                if (mNoItemLayout.getVisibility() == View.VISIBLE) {
+                    mNoItemLayout.setVisibility(View.GONE);
+                }
+                Toast.makeText(getContext(), "共享成功", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

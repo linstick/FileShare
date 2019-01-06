@@ -103,4 +103,9 @@ public class ProfileActivity extends BaseActivity {
         }
         return true;
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getSupportFragmentManager().findFragmentByTag(mTitle).onActivityResult(requestCode, resultCode, data);
+    }
 }

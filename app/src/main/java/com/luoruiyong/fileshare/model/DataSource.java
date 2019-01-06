@@ -20,13 +20,15 @@ public class DataSource {
     public static List<ShareFile> getDownloadShareFileList() {
         if (sDownloadShareFileList.size() == 0) {
             File[] files = FileUtil.scanFiles(FileUtil.DEFAULT_DOWNLOAD_PATH);
-            for (File file : files) {
-                ShareFile shareFile = new ShareFile();
-                shareFile.setName(file.getName());
-                shareFile.setSize(FileUtil.getFileSize(file));
-                shareFile.setUrl(file.getAbsolutePath());
-                shareFile.setStatus(ShareFile.STATUS_DOWNLOADED);
-                sDownloadShareFileList.add(shareFile);
+            if (files != null) {
+                for (File file : files) {
+                    ShareFile shareFile = new ShareFile();
+                    shareFile.setName(file.getName());
+                    shareFile.setSize(FileUtil.getFileSize(file));
+                    shareFile.setUrl(file.getAbsolutePath());
+                    shareFile.setStatus(ShareFile.STATUS_DOWNLOADED);
+                    sDownloadShareFileList.add(shareFile);
+                }
             }
         }
         return sDownloadShareFileList;
@@ -37,7 +39,7 @@ public class DataSource {
     }
 
     public static void deleteDownloadShareFile(int position) {
-        if (position < 0 || position > sDownloadShareFileList.size()) {
+        if (position < 0 || position >= sDownloadShareFileList.size()) {
             return;
         }
         ShareFile shareFile = sDownloadShareFileList.get(position);

@@ -140,6 +140,9 @@ public class DownloadFileFragment extends Fragment implements DownloadFileContra
                         DataSource.deleteDownloadShareFile(position);
                         mAdapter.notifyDataSetChanged();
                         Toast.makeText(getContext(), "删除成功 ", Toast.LENGTH_SHORT).show();
+                        if (mList.size() == 0) {
+                            mNoItemLayout.setVisibility(View.VISIBLE);
+                        }
                     }
                 })
                 .setNegativeButton("取消", null)
